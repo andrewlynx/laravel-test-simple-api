@@ -27,7 +27,7 @@ class Handler extends ExceptionHandler
     {
         // Process API exceptions independently
         if (\App::get('request')->is('api/*')) {
-            $this->renderable(function (Throwable $e) {
+            $this->renderable(function (\Exception $e) {
                 if ($e instanceof ValidationException) {
                     \Log::error(sprintf('Submission validation fails: %s, original request: %s',
                         $e->getMessage(),

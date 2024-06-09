@@ -2,26 +2,26 @@
 
 namespace App\Repositories;
 
-use App\DTO\SubmissionDTO;
 use App\Models\Submission;
 use Illuminate\Database\Eloquent\Collection;
+use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
-class SubmissionRepository implements SubmissionRepositoryInterface
+class SubmissionRepository implements RepositoryInterface
 {
     public function all(): Collection
     {
         return Submission::all();
     }
 
-    public function create(SubmissionDTO $data): Submission
+    public function create(ValidatedDTO $data): Submission
     {
-        return Submission::create($data);
+        return Submission::create($data->toArray());
     }
 
-    public function update(SubmissionDTO $data, $id): Submission
+    public function update(ValidatedDTO $data, $id): Submission
     {
         $user = Submission::findOrFail($id);
-        $user->update($data);
+        $user->update($data->toArray());
 
         return $user;
     }
