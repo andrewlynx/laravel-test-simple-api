@@ -34,7 +34,7 @@ class Handler extends ExceptionHandler
                         json_encode(\App::get('request')->all())
                     ));
                 }
-                return new ApiResponse(max($e->status, $e->getCode()), [], $e->getMessage());
+                return new ApiResponse(max($e->status ?? 0, $e->getCode()), [], $e->getMessage());
             });
         }
     }

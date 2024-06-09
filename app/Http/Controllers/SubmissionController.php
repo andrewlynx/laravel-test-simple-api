@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DTO\SubmissionDTO;
+use App\Http\Responses\ApiResponse;
 use App\Jobs\ModelSaveJob;
 use Illuminate\Http\Request;
 
@@ -18,5 +19,6 @@ class SubmissionController extends Controller
     {
         $dto = SubmissionDTO::fromRequest($request);
         $this->saveJob->handle($dto);
+        return new ApiResponse(200, ['Your request is being processed']);
     }
 }
