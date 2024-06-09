@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Http\Responses\ApiResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -23,8 +25,17 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        // Process API exceptions independently
+        if (\App::get('request')->is('api/*')) {
+            $this->renderable(function (Throwable $e) {
+                if ($e instanceof ValidationException) {
+                    \Log::error(sprintf('Submission validation fails: %s, original request: %s',
+                        $e->getMessage(),
+                        json_encode(\App::get('request')->all())
+                    ));
+                }
+                return new ApiResponse(max($e->status, $e->getCode()), [], $e->getMessage());
+            });
+        }
     }
 }
