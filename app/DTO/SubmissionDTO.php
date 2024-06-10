@@ -4,6 +4,11 @@ namespace App\DTO;
 
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
+/**
+ * @property string $name
+ * @property string $email
+ * @property string $message
+ */
 class SubmissionDTO extends ValidatedDTO
 {
     protected function rules(): array

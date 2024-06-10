@@ -34,6 +34,10 @@ class SubmissionJobSaved implements EventModelSavedInterface
 
     public function execute()
     {
-        \Log::info(sprintf('Submission saved successfully. Name: %s; Email: %s', $this->submission->name, $this->submission->email));
+        \Log::info(sprintf(
+            'Submission saved successfully. Name: %s; Email: %s',
+            $this->submission->getName(),
+            $this->submission->getEmail()
+        ));
     }
 }

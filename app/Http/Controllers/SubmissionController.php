@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DTO\SubmissionDTO;
+use App\Http\Requests\SubmissionRequest;
 use App\Http\Responses\ApiResponse;
 use App\Jobs\ModelSaveJob;
-use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
@@ -15,7 +15,7 @@ class SubmissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function submit(Request $request)
+    public function submit(SubmissionRequest $request)
     {
         $dto = SubmissionDTO::fromRequest($request);
         $this->saveJob->handle($dto);
