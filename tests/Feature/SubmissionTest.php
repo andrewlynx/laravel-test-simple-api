@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Events\SubmissionJobSaved;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
 use Tests\TestData\SubmissionApiTestData;
@@ -11,23 +12,6 @@ use Tests\TestData\SubmissionApiTestData;
 class SubmissionTest extends TestCase
 {
     use RefreshDatabase;
-
-    private $valid_data = [
-        "name" => "John Doe",
-        "email" => "john.doe@example.com",
-        "message" => "This is a test message",
-    ];
-
-    private $missing_property_data = [
-        "name" => "John Doe",
-        "email" => "john.doe@example.com",
-    ];
-
-    private $invalid_email_data = [
-        "name" => "John Doe",
-        "email" => "john.doeexample.com",
-        "message" => "This is a test message",
-    ];
 
     public function test_valid(): void
     {
@@ -61,5 +45,17 @@ class SubmissionTest extends TestCase
         Log::shouldReceive('error')
             ->with('The email field must be a valid email address.');
         $this->assertDatabaseCount('submissions', 0);
+    }
+
+    public function test_event_handle(): void
+    {
+        Event::fake();
+
+        $this->postJson('/api/submit', SubmissionApiTestData::$valid_data);
+
+        Event::assertDispatched(SubmissionJobSaved::class, function (SubmissionJobSaved $event){
+            $this->assertEquals(SubmissionApiTestData::$valid_data['email'], $event->submission->email);
+            return true;
+        });
     }
 }
